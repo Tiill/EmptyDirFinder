@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- *
+ * нужна оптимизация чтобы не сравнивать все файлы со всеми папками
  * @author Тиилл
  */
 public class EmptyDirFinder {
@@ -55,7 +55,7 @@ public class EmptyDirFinder {
         while (!listdirs.isEmpty()) {
             File x = listdirs.poll();
             File[] p = x.listFiles();
-            if (p == null){listalldirs.remove(listalldirs.size()-1);continue;}  /*Если список null значит нет доступа к папке*/
+            if (p == null){listalldirs.remove(listalldirs.indexOf(x));continue;}  /*Если список null значит нет доступа к папке*/
             for (File pos : p) {
                 if (pos.isDirectory()) {
                     listdirs.add(pos);
@@ -86,22 +86,19 @@ public class EmptyDirFinder {
             }
         }
         
-        deletedirs.sort(new Comparator<File>() {
-
-            @Override
-            public int compare(File o1, File o2) {
-                int z = o1.compareTo(o2);
-                if(z < 0) z=1;
-                if(z > 0) z=-1;
-                return z;
-            }
-        });
+//        deletedirs.sort(new Comparator<File>() {
+//            @Override
+//            public int compare(File o1, File o2) {
+//                return o1.getAbsolutePath().compareTo(o2.getAbsolutePath());
+//            }
+//        });
 
         stframe.setVisible(false);
         
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new MJFrame().setVisible(true);
             }
