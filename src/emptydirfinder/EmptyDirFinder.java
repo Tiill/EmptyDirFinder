@@ -55,7 +55,7 @@ public class EmptyDirFinder {
         while (!listdirs.isEmpty()) {
             File x = listdirs.poll();
             File[] p = x.listFiles();
-            if (p == null)continue;
+            if (p == null){listalldirs.remove(listalldirs.size()-1);continue;}  /*Если список null значит нет доступа к папке*/
             for (File pos : p) {
                 if (pos.isDirectory()) {
                     listdirs.add(pos);
