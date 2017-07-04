@@ -53,12 +53,12 @@ public class EmptyDirFinder {
             }
         }
 
-        //System.out.println("1 step");
-        JOptionPane.showMessageDialog(stframe, listalldirs);
-
         while (!listdirs.isEmpty()) {
             File x = listdirs.poll();
             File[] p = x.listFiles();
+            System.out.println("X=" + x);
+            System.out.println("P=" + p);
+            if (p == null)continue;
             for (File pos : p) {
                 if (pos.isDirectory()) {
                     listdirs.add(pos);
@@ -71,9 +71,6 @@ public class EmptyDirFinder {
                 }
             }
         }
-
-        //System.out.println("2 step");
-        JOptionPane.showMessageDialog(stframe, listalldirs);
 
         File[] flistdirs = new File[listalldirs.size()];
         File[] flistfiles = new File[listfiles.size()];
