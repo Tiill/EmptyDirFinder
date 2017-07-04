@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -56,8 +55,6 @@ public class EmptyDirFinder {
         while (!listdirs.isEmpty()) {
             File x = listdirs.poll();
             File[] p = x.listFiles();
-            System.out.println("X=" + x);
-            System.out.println("P=" + p);
             if (p == null)continue;
             for (File pos : p) {
                 if (pos.isDirectory()) {
