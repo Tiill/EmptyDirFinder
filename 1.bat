@@ -1,0 +1,1 @@
+copy C:\Users\Тиилл\Documents\NetBeansProjects\EmptyDirFinder\dist\EmptyDirFinder.jar D:\ /y

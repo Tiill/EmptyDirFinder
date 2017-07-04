@@ -100,10 +100,6 @@ public class EmptyDirFinder {
             }
         });
 
-        //System.out.println("3 step");
-        //System.out.println(listalldirs.size() + "\n" + listfiles.size() + "\n" + deletedirs.size());
-        JOptionPane.showMessageDialog(stframe, deletedirs);
-        
         stframe.setVisible(false);
         
 
