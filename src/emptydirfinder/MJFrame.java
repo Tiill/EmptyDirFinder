@@ -5,10 +5,8 @@
  */
 package emptydirfinder;
 
-import static emptydirfinder.EmptyDirFinder.listfiles;
-import static emptydirfinder.EmptyDirFinder.deletedirs;
+import static emptydirfinder.EmptyDirFinder.globalEmptyDirs;
 import java.io.File;
-import java.net.URI;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,13 +23,13 @@ public class MJFrame extends javax.swing.JFrame {
         String mainpath = EmptyDirFinder.mainPath.getAbsolutePath();
         jTextField1.setText(mainpath);
         
-        File[] fdeletedirs = new File[deletedirs.size()];
-        fdeletedirs = deletedirs.toArray(fdeletedirs);
+        File[] fdeletedirs = new File[globalEmptyDirs.size()];
+        fdeletedirs = globalEmptyDirs.toArray(fdeletedirs);
         StringBuilder sdeletedirs =new StringBuilder();
         for(File z: fdeletedirs){
             sdeletedirs.append(z.getAbsolutePath()).append("\n");
         }
-        jTextArea2.setText(sdeletedirs.toString());
+        jTextArea2.setText(sdeletedirs.toString() + "\n\r" + globalEmptyDirs.size());
     }
 
     /**
@@ -102,7 +100,7 @@ public class MJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        for(File z : deletedirs){
+        for(File z : globalEmptyDirs){
             z.delete();
         }
         JOptionPane.showMessageDialog(rootPane, "All folders are dellete");
