@@ -49,12 +49,12 @@ public class EmptyDirFinder {
         } catch (IOException ex) {
         }
 
-//        findemptydirsWithRecAll(mainPath);
+        findemptydirsWithRecAll(mainPath);
+        System.out.println(new Date(System.currentTimeMillis()));               //debug
+//        oldWalkFileTree();
 //        System.out.println(new Date(System.currentTimeMillis()));               //debug
-        oldWalkFileTree();
-        System.out.println(new Date(System.currentTimeMillis()));               //debug
-        findemptydirsWithDelete();
-        System.out.println(new Date(System.currentTimeMillis()));               //debug
+//        findemptydirsWithDelete();
+//        System.out.println(new Date(System.currentTimeMillis()));               //debug
         /* Write lists to files */
         debug();
 
