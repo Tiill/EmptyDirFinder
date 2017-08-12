@@ -24,6 +24,7 @@ public class EmptyDirFinder {
     static ArrayList<File> listAllDirs = new ArrayList<>();
     static List<File> globalEmptyDirs = new LinkedList<>();
     private static final Object lock = new Object();
+    static MJFrame mFraim;
 
     /**
      * @param args the command line arguments
@@ -64,7 +65,8 @@ public class EmptyDirFinder {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new MJFrame().setVisible(true);
+                mFraim = new MJFrame();
+                mFraim.setVisible(true);
             }
         });
     }
@@ -150,22 +152,21 @@ public class EmptyDirFinder {
 
     private static void findemptydirsWithDelete() throws FileNotFoundException, IOException {
         globalEmptyDirs = new LinkedList<>(listAllDirs);
-        
 
         for (File x : listAllFiles) {
-                stFrame.incjTextField3();
-                System.out.println(globalEmptyDirs.size());
-                String path = x.getAbsolutePath();
-                Iterator<File> iter = globalEmptyDirs.iterator();
-                for (int z = 0; z<globalEmptyDirs.size(); z++) {
-                    System.out.println("+");
-                    File y = iter.next();
-                        if (y == null) {
-                            continue;
-                        }
-                        if (path.contains(y.getPath())) {
-                            globalEmptyDirs.remove(z);
-                        }
+            stFrame.incjTextField3();
+            System.out.println(globalEmptyDirs.size());
+            String path = x.getAbsolutePath();
+            Iterator<File> iter = globalEmptyDirs.iterator();
+            for (int z = 0; z < globalEmptyDirs.size(); z++) {
+                System.out.println("+");
+                File y = iter.next();
+                if (y == null) {
+                    continue;
+                }
+                if (path.contains(y.getPath())) {
+                    globalEmptyDirs.remove(z);
+                }
             }
         }
     }
@@ -248,5 +249,34 @@ public class EmptyDirFinder {
             System.out.println("not one predicate");
             return false;
         }
+    }
+    
+    public static void restart() throws IOException{
+        mainPath = new File(mFraim.getjTextField1().getText());
+        mFraim.dispose();
+        mFraim = null;
+        
+        currentListDirs = new LinkedList<>();
+        listAllFiles = new ArrayList<>();
+        listAllDirs = new ArrayList<>();
+        globalEmptyDirs = new LinkedList<>();
+        
+        stFrame.dispose();
+        stFrame = new StartJFrame();
+        
+        findemptydirsWithRecAll(mainPath);
+        System.out.println(new Date(System.currentTimeMillis()));               //debug
+        debug();
+        
+        /* Close start window */
+        stFrame.setVisible(false);
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                mFraim = new MJFrame();
+                mFraim.setVisible(true);
+            }
+        });
     }
 }

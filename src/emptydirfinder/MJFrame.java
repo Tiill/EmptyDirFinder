@@ -6,8 +6,18 @@
 package emptydirfinder;
 
 import static emptydirfinder.EmptyDirFinder.globalEmptyDirs;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.TransferHandler;
 
 /**
  *
@@ -23,13 +33,45 @@ public class MJFrame extends javax.swing.JFrame {
         String mainpath = EmptyDirFinder.mainPath.getAbsolutePath();
         jTextField1.setText(mainpath);
         
-        File[] fdeletedirs = new File[globalEmptyDirs.size()];
-        fdeletedirs = globalEmptyDirs.toArray(fdeletedirs);
-        StringBuilder sdeletedirs =new StringBuilder();
-        for(File z: fdeletedirs){
-            sdeletedirs.append(z.getAbsolutePath()).append("\n");
-        }
-        jTextArea2.setText(sdeletedirs.toString() + "\n\r" + globalEmptyDirs.size());
+        listModel = new Vector<>(globalEmptyDirs);
+        jList1.setListData(listModel);
+        
+        jTextField1.setTransferHandler(new TransferHandler(null) {
+
+            @Override
+            public boolean canImport(TransferHandler.TransferSupport support) {
+//                return super.canImport(support);
+
+                return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+                        || support.isDataFlavorSupported(DataFlavor.stringFlavor);
+            }
+
+            @Override
+            public boolean importData(TransferHandler.TransferSupport support) {
+//                return super.importData(support); //To change body of generated methods, choose Tools | Templates.
+
+                Transferable t = support.getTransferable();
+                try {
+                    if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+
+                        Object o = t.getTransferData(DataFlavor.javaFileListFlavor);
+
+                        @SuppressWarnings("unchecked")
+                        List<File> files = (List<File>) o;
+                        if(files.size() > 1) jTextField1.setText("Слишком много файлов");
+                        else jTextField1.setText(files.get(0).getAbsolutePath());
+                    }
+                    
+                    EmptyDirFinder.restart();
+                } catch (UnsupportedFlavorException ex) {
+                    Logger.getLogger(MJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(MJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                return true;
+            }
+        });
     }
 
     /**
@@ -43,9 +85,9 @@ public class MJFrame extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("EmptyDirFinder");
@@ -53,17 +95,14 @@ public class MJFrame extends javax.swing.JFrame {
         jTextField1.setEditable(false);
         jTextField1.setText("jTextField1");
 
-        jTextArea2.setEditable(false);
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
-
         jButton1.setText("Dellete folders");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -73,7 +112,7 @@ public class MJFrame extends javax.swing.JFrame {
                 .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1))
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane1)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -82,7 +121,7 @@ public class MJFrame extends javax.swing.JFrame {
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -100,19 +139,31 @@ public class MJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        for(File z : globalEmptyDirs){
-            z.delete();
+        int c = 0;
+        for(Object z : jList1.getSelectedValuesList()){
+            c++;
+            File x = (File)z;
+            if(x.exists())x.delete();
         }
-        JOptionPane.showMessageDialog(rootPane, "All folders are dellete");
-        System.exit(0);
+        int[] index= jList1.getSelectedIndices();
+        for(int v = index.length-1; v>=0 ; v--){
+            listModel.remove(index[v]);
+        }
+        jList1.clearSelection();
+        jList1.repaint();
+        JOptionPane.showMessageDialog(rootPane, "Dellete:" + c + " empty folders.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public JTextField getjTextField1() {
+        return jTextField1;
+    }
 
+    private Vector<File> listModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
