@@ -10,11 +10,13 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
@@ -28,14 +30,15 @@ public class MJFrame extends javax.swing.JFrame {
     /**
      * Creates new form MJFrame
      */
-    public MJFrame(){
+    public MJFrame() {
         initComponents();
         String mainpath = EmptyDirFinder.mainPath.getAbsolutePath();
         jTextField1.setText(mainpath);
-        
+        jLabel1.setText("Total empty dirs: " + globalEmptyDirs.size());
+
         listModel = new Vector<>(globalEmptyDirs);
         jList1.setListData(listModel);
-        
+
         jTextField1.setTransferHandler(new TransferHandler(null) {
 
             @Override
@@ -58,11 +61,14 @@ public class MJFrame extends javax.swing.JFrame {
 
                         @SuppressWarnings("unchecked")
                         List<File> files = (List<File>) o;
-                        if(files.size() > 1) jTextField1.setText("Слишком много файлов");
-                        else jTextField1.setText(files.get(0).getAbsolutePath());
+                        if (files.size() > 1) {
+                            jTextField1.setText("Слишком много файлов");
+                        } else if(files.get(0).exists()){
+                            jTextField1.setText(files.get(0).getAbsolutePath());
+                        } 
                     }
-                    
-                    EmptyDirFinder.restart();
+
+                    new EmptyDirFinder().restart();
                 } catch (UnsupportedFlavorException ex) {
                     Logger.getLogger(MJFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -88,12 +94,16 @@ public class MJFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("EmptyDirFinder");
 
         jTextField1.setEditable(false);
-        jTextField1.setText("jTextField1");
 
         jButton1.setText("Dellete folders");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -104,24 +114,70 @@ public class MJFrame extends javax.swing.JFrame {
 
         jScrollPane1.setViewportView(jList1);
 
+        jButton2.setText("Select All");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Select None");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Browse");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Ignore List");
+
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 255)));
+        jLabel1.setOpaque(true);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1))
             .addComponent(jScrollPane1)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jButton4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3)
+                    .addComponent(jButton5)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -140,27 +196,69 @@ public class MJFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int c = 0;
-        for(Object z : jList1.getSelectedValuesList()){
+        for (Object z : jList1.getSelectedValuesList()) {
             c++;
-            File x = (File)z;
-            if(x.exists())x.delete();
+            File x = (File) z;
+            if (x.exists()) {
+                delete(x);
+            }
         }
-        int[] index= jList1.getSelectedIndices();
-        for(int v = index.length-1; v>=0 ; v--){
+        int[] index = jList1.getSelectedIndices();
+        for (int v = index.length - 1; v >= 0; v--) {
             listModel.remove(index[v]);
         }
         jList1.clearSelection();
         jList1.repaint();
+        jLabel1.setText("Total empty dirs: " + listModel.size());
         JOptionPane.showMessageDialog(rootPane, "Dellete:" + c + " empty folders.");
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        JFileChooser browser = new JFileChooser(".");
+        browser.setMultiSelectionEnabled(false);
+        browser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        browser.showOpenDialog(this);
+        if(browser.getSelectedFile() == null) return;
+        jTextField1.setText(browser.getSelectedFile().getAbsolutePath());
+        try{
+        new EmptyDirFinder().restart();
+        }catch (IOException e){
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (jList1.getModel().getSize() > 0){
+        jList1.setSelectionInterval(0, jList1.getModel().getSize()-1);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        jList1.clearSelection();
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     public JTextField getjTextField1() {
         return jTextField1;
     }
+    
+    void delete(File f){
+  if (f.isDirectory()) {
+    for (File c : f.listFiles())
+      delete(c);
+  }
+  if (!f.delete())
+        System.out.println("Failed to delete file: " + f);
+  else listModel.remove(f);
+}
 
     private Vector<File> listModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
