@@ -9,9 +9,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * нужна оптимизация чтобы не сравнивать все файлы со всеми папками
+ *
  *
  * @author Тиилл
  */
@@ -25,9 +27,12 @@ public class EmptyDirFinder {
     static List<File> globalEmptyDirs = new LinkedList<>();
     private static final Object lock = new Object();
     static MJFrame mFraim;
+    static List<String> ignoreList = new LinkedList<>();
 
     /**
      * @param args the command line arguments
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         System.out.println(new Date(System.currentTimeMillis()));               //debug
@@ -41,6 +46,10 @@ public class EmptyDirFinder {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        
+        ignoreList.add("Thumbs.db");
+        ignoreList.add("desktop.ini");
+        ignoreList.add(".*\\.tmp");
 
         stFrame = new StartJFrame();
         stFrame.setVisible(true);
@@ -61,6 +70,7 @@ public class EmptyDirFinder {
 
         /* Close start window */
         stFrame.setVisible(false);
+        stFrame.dispose();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -115,6 +125,9 @@ public class EmptyDirFinder {
         fout2.write(listAllFiles.toString().getBytes());
         FileOutputStream fout3 = new FileOutputStream("DeletingDirs.txt");
         fout3.write(globalEmptyDirs.toString().getBytes());
+        fout.close();
+        fout2.close();
+        fout3.close();
     }
 
     private static void findemptydirsWithString() throws FileNotFoundException, IOException {
@@ -219,6 +232,18 @@ public class EmptyDirFinder {
                 return false;
             }
             if (z.isFile()) {
+                for (String ignoreFile : ignoreList) {
+                    if (z.getName().equals(ignoreFile)) {
+                        System.out.println("Ignore:"+z.getName());
+                        return false;
+                    }
+                    Pattern pat = Pattern.compile(ignoreFile);
+                    Matcher mat = pat.matcher(z.getName());
+                    if (mat.matches()) {
+                        System.out.println("Ignore:"+z.getName());
+                        return false;
+                    }
+                }
                 stFrame.incjTextField1();
                 return true;
             }
@@ -250,33 +275,46 @@ public class EmptyDirFinder {
             return false;
         }
     }
-    
-    public static void restart() throws IOException{
-        mainPath = new File(mFraim.getjTextField1().getText());
-        mFraim.dispose();
-        mFraim = null;
-        
-        currentListDirs = new LinkedList<>();
-        listAllFiles = new ArrayList<>();
-        listAllDirs = new ArrayList<>();
-        globalEmptyDirs = new LinkedList<>();
-        
-        stFrame.dispose();
-        stFrame = new StartJFrame();
-        
-        findemptydirsWithRecAll(mainPath);
-        System.out.println(new Date(System.currentTimeMillis()));               //debug
-        debug();
-        
-        /* Close start window */
-        stFrame.setVisible(false);
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                mFraim = new MJFrame();
-                mFraim.setVisible(true);
+
+    public void restart() throws IOException {
+        new restartThread().start();
+    }
+
+    class restartThread extends Thread {
+
+        @Override
+        public void run() {
+            mainPath = new File(mFraim.getjTextField1().getText());
+            mFraim.dispose();
+            mFraim = null;
+
+            currentListDirs = new LinkedList<>();
+            listAllFiles = new ArrayList<>();
+            listAllDirs = new ArrayList<>();
+            globalEmptyDirs = new LinkedList<>();
+
+            stFrame = new StartJFrame();
+            stFrame.setVisible(true);
+
+            findemptydirsWithRecAll(mainPath);
+            System.out.println(new Date(System.currentTimeMillis()));               //debug
+            try {
+                debug();
+            } catch (IOException e) {
+                System.out.println(e);
             }
-        });
+
+            /* Close start window */
+            stFrame.setVisible(false);
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    /* Create and display the form */
+                    mFraim = new MJFrame();
+                    mFraim.setVisible(true);
+                }
+            });
+        }
+
     }
 }
