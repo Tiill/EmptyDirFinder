@@ -52,6 +52,7 @@ public class StartJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("EmptyDirFinder");
+        setLocationByPlatform(true);
 
         jLabel1.setText("Files find:");
 

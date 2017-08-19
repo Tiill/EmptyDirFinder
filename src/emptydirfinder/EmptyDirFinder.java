@@ -28,6 +28,7 @@ public class EmptyDirFinder {
     private static final Object lock = new Object();
     static MJFrame mFraim;
     static List<String> ignoreList = new LinkedList<>();
+    static boolean ignore0mb = true;
 
     /**
      * @param args the command line arguments
@@ -66,7 +67,7 @@ public class EmptyDirFinder {
 //        findemptydirsWithDelete();
 //        System.out.println(new Date(System.currentTimeMillis()));               //debug
         /* Write lists to files */
-        debug();
+//        debug();
 
         /* Close start window */
         stFrame.setVisible(false);
@@ -233,13 +234,13 @@ public class EmptyDirFinder {
             }
             if (z.isFile()) {
                 for (String ignoreFile : ignoreList) {
-                    if (z.getName().equals(ignoreFile)) {
-                        System.out.println("Ignore:"+z.getName());
-                        return false;
-                    }
                     Pattern pat = Pattern.compile(ignoreFile);
                     Matcher mat = pat.matcher(z.getName());
                     if (mat.matches()) {
+                        System.out.println("Ignore:"+z.getName());
+                        return false;
+                    }
+                    if (ignore0mb == true && 0 == z.length()){
                         System.out.println("Ignore:"+z.getName());
                         return false;
                     }

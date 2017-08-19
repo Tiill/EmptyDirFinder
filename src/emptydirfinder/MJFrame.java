@@ -10,7 +10,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
@@ -40,25 +39,19 @@ public class MJFrame extends javax.swing.JFrame {
         jList1.setListData(listModel);
 
         jTextField1.setTransferHandler(new TransferHandler(null) {
-
             @Override
             public boolean canImport(TransferHandler.TransferSupport support) {
 //                return super.canImport(support);
-
                 return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
                         || support.isDataFlavorSupported(DataFlavor.stringFlavor);
             }
-
             @Override
             public boolean importData(TransferHandler.TransferSupport support) {
 //                return super.importData(support); //To change body of generated methods, choose Tools | Templates.
-
                 Transferable t = support.getTransferable();
                 try {
                     if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-
                         Object o = t.getTransferData(DataFlavor.javaFileListFlavor);
-
                         @SuppressWarnings("unchecked")
                         List<File> files = (List<File>) o;
                         if (files.size() > 1) {
@@ -102,6 +95,7 @@ public class MJFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("EmptyDirFinder");
+        setLocationByPlatform(true);
 
         jTextField1.setEditable(false);
 
@@ -136,9 +130,15 @@ public class MJFrame extends javax.swing.JFrame {
         });
 
         jButton5.setText("Ignore List");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 255)));
+        jLabel1.setToolTipText("");
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 255), 2));
         jLabel1.setOpaque(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -147,9 +147,9 @@ public class MJFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
@@ -175,7 +175,7 @@ public class MJFrame extends javax.swing.JFrame {
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton5)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
         );
@@ -195,22 +195,21 @@ public class MJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int c = 0;
+        deletedDirectorys = 0;
         for (Object z : jList1.getSelectedValuesList()) {
-            c++;
             File x = (File) z;
             if (x.exists()) {
                 delete(x);
             }
         }
-        int[] index = jList1.getSelectedIndices();
-        for (int v = index.length - 1; v >= 0; v--) {
-            listModel.remove(index[v]);
-        }
+//        int[] index = jList1.getSelectedIndices();
+//        for (int v = index.length - 1; v >= 0; v--) {
+//            listModel.remove(index[v]);
+//        }
         jList1.clearSelection();
         jList1.repaint();
         jLabel1.setText("Total empty dirs: " + listModel.size());
-        JOptionPane.showMessageDialog(rootPane, "Dellete:" + c + " empty folders.");
+        JOptionPane.showMessageDialog(rootPane, "Dellete:" + deletedDirectorys + " empty folders.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -237,6 +236,10 @@ public class MJFrame extends javax.swing.JFrame {
         jList1.clearSelection();
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        new IgnoreSettings().setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     public JTextField getjTextField1() {
         return jTextField1;
     }
@@ -245,13 +248,15 @@ public class MJFrame extends javax.swing.JFrame {
   if (f.isDirectory()) {
     for (File c : f.listFiles())
       delete(c);
+    deletedDirectorys++;
   }
-  if (!f.delete())
-        System.out.println("Failed to delete file: " + f);
-  else listModel.remove(f);
+  if (f.delete()) {
+      listModel.remove(f);
+    } else System.out.println("Failed to delete file: " + f);
 }
 
     private Vector<File> listModel;
+    private Integer deletedDirectorys = 0;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
