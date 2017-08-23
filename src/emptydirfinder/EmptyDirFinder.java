@@ -47,31 +47,16 @@ public class EmptyDirFinder {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         ignoreList.add("Thumbs.db");
         ignoreList.add("desktop.ini");
         ignoreList.add(".*\\.tmp");
-
-        stFrame = new StartJFrame();
-        stFrame.setVisible(true);
 
         try {
             mainPath = new File(".").getCanonicalFile();
         } catch (IOException ex) {
         }
 
-        findemptydirsWithRecAll(mainPath);
-        System.out.println(new Date(System.currentTimeMillis()));               //debug
-//        oldWalkFileTree();
-//        System.out.println(new Date(System.currentTimeMillis()));               //debug
-//        findemptydirsWithDelete();
-//        System.out.println(new Date(System.currentTimeMillis()));               //debug
-        /* Write lists to files */
-//        debug();
-
-        /* Close start window */
-        stFrame.setVisible(false);
-        stFrame.dispose();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -237,11 +222,11 @@ public class EmptyDirFinder {
                     Pattern pat = Pattern.compile(ignoreFile);
                     Matcher mat = pat.matcher(z.getName());
                     if (mat.matches()) {
-                        System.out.println("Ignore:"+z.getName());
+                        System.out.println("Ignore:" + z.getName());
                         return false;
                     }
-                    if (ignore0mb == true && 0 == z.length()){
-                        System.out.println("Ignore:"+z.getName());
+                    if (ignore0mb == true && 0 == z.length()) {
+                        System.out.println("Ignore:" + z.getName());
                         return false;
                     }
                 }
