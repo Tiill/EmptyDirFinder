@@ -27,8 +27,7 @@ public class EmptyDirFinder {
     static List<File> globalEmptyDirs = new LinkedList<>();
     private static final Object lock = new Object();
     static MJFrame mFraim;
-    static List<String> ignoreList = new LinkedList<>();
-    static boolean ignore0mb = true;
+    static Settings settings = new Settings();
 
     /**
      * @param args the command line arguments
@@ -48,9 +47,6 @@ public class EmptyDirFinder {
             java.util.logging.Logger.getLogger(MJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
-        ignoreList.add("Thumbs.db");
-        ignoreList.add("desktop.ini");
-        ignoreList.add(".*\\.tmp");
 
         try {
             mainPath = new File(".").getCanonicalFile();
@@ -218,14 +214,14 @@ public class EmptyDirFinder {
                 return false;
             }
             if (z.isFile()) {
-                for (String ignoreFile : ignoreList) {
+                for (String ignoreFile : settings.IGNORE_FILES) {
                     Pattern pat = Pattern.compile(ignoreFile);
                     Matcher mat = pat.matcher(z.getName());
                     if (mat.matches()) {
                         System.out.println("Ignore:" + z.getName());
                         return false;
                     }
-                    if (ignore0mb == true && 0 == z.length()) {
+                    if (settings.IGNORE_OMB == true && 0 == z.length()) {
                         System.out.println("Ignore:" + z.getName());
                         return false;
                     }
