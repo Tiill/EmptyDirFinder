@@ -280,11 +280,6 @@ public class EmptyDirFinder {
 
             findemptydirsWithRecAll(mainPath);
             System.out.println(new Date(System.currentTimeMillis()));               //debug
-            try {
-                debug();
-            } catch (IOException e) {
-                System.out.println(e);
-            }
 
             /* Close start window */
             stFrame.setVisible(false);

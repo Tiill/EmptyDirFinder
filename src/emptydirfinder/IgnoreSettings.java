@@ -5,8 +5,6 @@
  */
 package emptydirfinder;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.util.List;
@@ -149,7 +147,7 @@ public class IgnoreSettings extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        jTextArea1.setText("Thumbs.db\ndesktop.ini\n.*\\\\.tmp");
+        jTextArea1.setText("Thumbs.db\ndesktop.ini\n*.tmp");
         jCheckBox1.setSelected(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
