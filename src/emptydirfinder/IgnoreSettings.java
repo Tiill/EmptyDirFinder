@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
 
 /**
  *
@@ -141,9 +142,7 @@ public class IgnoreSettings extends javax.swing.JDialog {
         EmptyDirFinder.settings.IGNORE_FILES = prototypeIgnoreList;
         try {
             EmptyDirFinder.settings.save();
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(IgnoreSettings.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (BackingStoreException ex) {
             Logger.getLogger(IgnoreSettings.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.dispose();
