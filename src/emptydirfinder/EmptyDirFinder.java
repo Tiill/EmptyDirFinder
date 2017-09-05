@@ -227,10 +227,20 @@ public class EmptyDirFinder {
                     }
                 }
                 stFrame.incjTextField1();
+                listAllFiles.add(z);
                 return true;
             }
             if (z.isDirectory()) {
                 stFrame.incjTextField2();
+                listAllDirs.add(z);
+                if(settings.IGNORE_SYS == true){
+                    for(String x : settings.IGNORE_SYSTEM_DIRECTRIES){
+                        if(z.getName().equals(x)) {
+                        System.out.println("blocked: " + z);
+                        return true; 
+                        }
+                    }
+                }
                 boolean notEmpty = false;
                 File[] childrenFiles = z.listFiles();
                 if (childrenFiles == null) {

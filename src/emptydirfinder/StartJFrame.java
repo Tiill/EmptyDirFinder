@@ -56,7 +56,7 @@ public class StartJFrame extends javax.swing.JFrame {
         jLabel2.setText("Dir find:");
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-Extensions Folder-15.png"))); // NOI18N
-        jLabel3.setText("Search:");
+        jLabel3.setText("Empty:");
 
         jLabel4.setBackground(new java.awt.Color(255, 255, 255));
         jLabel4.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(102, 102, 255), new java.awt.Color(153, 153, 153)));

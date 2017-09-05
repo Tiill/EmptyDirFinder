@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package emptydirfinder;
 
 import static emptydirfinder.EmptyDirFinder.globalEmptyDirs;
@@ -33,7 +28,8 @@ public class MJFrame extends javax.swing.JFrame {
         initComponents();
         String mainpath = EmptyDirFinder.mainPath.getAbsolutePath();
         jTextField1.setText(mainpath);
-        jLabel1.setText("Total empty dirs: " + globalEmptyDirs.size());
+        jLabel1.setText("Empty: " + globalEmptyDirs.size() + "  / Dirs: " + EmptyDirFinder.listAllDirs.size() + 
+                "  / Files: " + EmptyDirFinder.listAllFiles.size());
 
         listModel = new Vector<>(globalEmptyDirs);
         jList1.setListData(listModel);
@@ -126,7 +122,7 @@ public class MJFrame extends javax.swing.JFrame {
         });
 
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-Search-15.png"))); // NOI18N
-        jButton4.setText("Browse");
+        jButton4.setText("Scan");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -155,9 +151,9 @@ public class MJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

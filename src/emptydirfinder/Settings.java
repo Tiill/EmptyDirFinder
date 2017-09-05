@@ -14,10 +14,13 @@ import java.util.prefs.Preferences;
 public class Settings {
 
     List<String> IGNORE_FILES = new LinkedList<>();
+    List<String> IGNORE_SYSTEM_DIRECTRIES = new LinkedList<>();
+    boolean IGNORE_SYS = true;
     boolean IGNORE_OMB = true;
     Preferences localSettings = Preferences.userRoot();
 
     public Settings() {
+        IGNORE_SYSTEM_DIRECTRIES.add("Windows");
         try {
             load();
         } catch (BackingStoreException ex) {
@@ -28,7 +31,8 @@ public class Settings {
     void load() throws BackingStoreException {
         if (localSettings.nodeExists("/EmptyDirFinder")) {
             localSettings = localSettings.node("/EmptyDirFinder");
-            IGNORE_OMB = localSettings.getBoolean("IGNORE_OMB", true);
+            IGNORE_OMB = localSettings.getBoolean("IGNORE_OMB", false);
+            IGNORE_SYS = localSettings.getBoolean("IGNORE_SYS", true);
             String[] parts = localSettings.get("IGNORE_FILES", "Thumbs.db;desktop.ini;.*\\\\.tmp;").split(";");
             IGNORE_FILES = new LinkedList<>();
             for (String part : parts) {
@@ -40,12 +44,14 @@ public class Settings {
             IGNORE_FILES.add("desktop.ini");
             IGNORE_FILES.add(".*\\.tmp");
             IGNORE_OMB = true;
+            IGNORE_SYS = true;
         }
     }
 
     void save() throws BackingStoreException {
         localSettings = localSettings.node("/EmptyDirFinder");
         localSettings.putBoolean("IGNORE_OMB", IGNORE_OMB);
+        localSettings.putBoolean("IGNORE_SYS", IGNORE_SYS);
         StringBuilder strOut = new StringBuilder();
         for (String z : IGNORE_FILES) {
             strOut.append(z).append(";");
