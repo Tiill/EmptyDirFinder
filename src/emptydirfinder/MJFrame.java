@@ -214,7 +214,7 @@ public class MJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        JFileChooser browser = new JFileChooser(".");
+        JFileChooser browser = new JFileChooser(jTextField1.getText());
         browser.setMultiSelectionEnabled(false);
         browser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browser.showOpenDialog(this);

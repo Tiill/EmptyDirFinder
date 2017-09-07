@@ -20,7 +20,7 @@ public class Settings {
     Preferences localSettings = Preferences.userRoot();
 
     public Settings() {
-        IGNORE_SYSTEM_DIRECTRIES.add("Windows");
+        IGNORE_SYSTEM_DIRECTRIES.add(System.getenv("WINDR"));
         try {
             load();
         } catch (BackingStoreException ex) {

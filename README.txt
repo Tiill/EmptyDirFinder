@@ -1,1 +1,1 @@
-It expires empty directories and allows you to conveniently select the required directories before deleting. Be careful with system directories!
+It expires empty directories and allows you to conveniently select the required directories before deleting.
