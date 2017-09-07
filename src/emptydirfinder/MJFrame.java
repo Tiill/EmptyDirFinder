@@ -28,8 +28,8 @@ public class MJFrame extends javax.swing.JFrame {
         initComponents();
         String mainpath = EmptyDirFinder.mainPath.getAbsolutePath();
         jTextField1.setText(mainpath);
-        jLabel1.setText("Empty: " + globalEmptyDirs.size() + "  / Dirs: " + EmptyDirFinder.listAllDirs.size() + 
-                "  / Files: " + EmptyDirFinder.listAllFiles.size());
+        jLabel1.setText("Empty: " + globalEmptyDirs.size() + "  / Dirs: " + EmptyDirFinder.listAllDirs.size()
+                + "  / Files: " + EmptyDirFinder.listAllFiles.size());
 
         listModel = new Vector<>(globalEmptyDirs);
         jList1.setListData(listModel);
@@ -41,6 +41,7 @@ public class MJFrame extends javax.swing.JFrame {
                 return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
                         || support.isDataFlavorSupported(DataFlavor.stringFlavor);
             }
+
             @Override
             public boolean importData(TransferHandler.TransferSupport support) {
 //                return super.importData(support); //To change body of generated methods, choose Tools | Templates.
@@ -52,9 +53,9 @@ public class MJFrame extends javax.swing.JFrame {
                         List<File> files = (List<File>) o;
                         if (files.size() > 1) {
                             jTextField1.setText("Слишком много файлов");
-                        } else if(files.get(0).exists()){
+                        } else if (files.get(0).exists()) {
                             jTextField1.setText(files.get(0).getAbsolutePath());
-                        } 
+                        }
                     }
 
                     new EmptyDirFinder().restart();
@@ -203,13 +204,10 @@ public class MJFrame extends javax.swing.JFrame {
                 delete(x);
             }
         }
-//        int[] index = jList1.getSelectedIndices();
-//        for (int v = index.length - 1; v >= 0; v--) {
-//            listModel.remove(index[v]);
-//        }
         jList1.clearSelection();
         jList1.repaint();
-        jLabel1.setText("Total empty dirs: " + listModel.size());
+        jLabel1.setText("Empty: " + listModel.size() + "  / Dirs: " + (EmptyDirFinder.listAllDirs.size()-deletedDirectorys)
+                + "  / Files: " + EmptyDirFinder.listAllFiles.size());
         JOptionPane.showMessageDialog(rootPane, "Dellete:" + deletedDirectorys + " empty folders.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -218,18 +216,20 @@ public class MJFrame extends javax.swing.JFrame {
         browser.setMultiSelectionEnabled(false);
         browser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         browser.showOpenDialog(this);
-        if(browser.getSelectedFile() == null) return;
+        if (browser.getSelectedFile() == null) {
+            return;
+        }
         jTextField1.setText(browser.getSelectedFile().getAbsolutePath());
-        try{
-        new EmptyDirFinder().restart();
-        }catch (IOException e){
+        try {
+            new EmptyDirFinder().restart();
+        } catch (IOException e) {
             System.out.println(e);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (jList1.getModel().getSize() > 0){
-        jList1.setSelectionInterval(0, jList1.getModel().getSize()-1);
+        if (jList1.getModel().getSize() > 0) {
+            jList1.setSelectionInterval(0, jList1.getModel().getSize() - 1);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -244,17 +244,20 @@ public class MJFrame extends javax.swing.JFrame {
     public JTextField getjTextField1() {
         return jTextField1;
     }
-    
-    void delete(File f){
-  if (f.isDirectory()) {
-    for (File c : f.listFiles())
-      delete(c);
-    deletedDirectorys++;
-  }
-  if (f.delete()) {
-      listModel.remove(f);
-    } else System.out.println("Failed to delete file: " + f);
-}
+
+    void delete(File f) {
+        if (f.isDirectory()) {
+            for (File c : f.listFiles()) {
+                delete(c);
+            }
+            deletedDirectorys++;
+        }
+        if (f.delete()) {
+            listModel.remove(f);
+        } else {
+            System.out.println("Failed to delete file: " + f);
+        }
+    }
 
     private Vector<File> listModel;
     private Integer deletedDirectorys = 0;
