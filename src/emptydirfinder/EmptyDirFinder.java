@@ -235,7 +235,7 @@ public class EmptyDirFinder {
                 listAllDirs.add(z);
                 if(settings.IGNORE_SYS == true){
                     for(String x : settings.IGNORE_SYSTEM_DIRECTRIES){
-                        if(z.getName().equals(x)) {
+                        if(z.getAbsolutePath().equals(x)) {
                         System.out.println("blocked: " + z);
                         return true; 
                         }
