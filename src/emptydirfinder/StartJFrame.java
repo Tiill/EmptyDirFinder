@@ -1,9 +1,5 @@
 package emptydirfinder;
 
-/**
- *
- * @author Тиилл
- */
 public class StartJFrame extends javax.swing.JFrame {
 
     /**

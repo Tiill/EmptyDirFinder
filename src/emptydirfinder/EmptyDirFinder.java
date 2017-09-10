@@ -12,11 +12,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- *
- * @author Artem
- */
 public class EmptyDirFinder {
 
     static StartJFrame stFrame;

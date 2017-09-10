@@ -7,10 +7,6 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-/**
- *
- * @author Тиилл
- */
 public class Settings {
 
     List<String> IGNORE_FILES = new LinkedList<>();

@@ -15,10 +15,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 
-/**
- *
- * @author Тиилл
- */
 public class MJFrame extends javax.swing.JFrame {
 
     /**
