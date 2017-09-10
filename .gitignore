@@ -19,3 +19,5 @@ hs_err_pid*
 # Other
 1.xml
 *.bat
+build/
+folder.png

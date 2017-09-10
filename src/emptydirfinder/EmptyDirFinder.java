@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  *
  *
- * @author Тиилл
+ * @author Artem
  */
 public class EmptyDirFinder {
 
