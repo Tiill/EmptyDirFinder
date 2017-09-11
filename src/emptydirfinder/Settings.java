@@ -17,6 +17,12 @@ public class Settings {
 
     public Settings() {
         IGNORE_SYSTEM_DIRECTRIES.add(System.getenv("WINDIR"));
+        IGNORE_SYSTEM_DIRECTRIES.add("/boot");
+        IGNORE_SYSTEM_DIRECTRIES.add("/lib");
+        IGNORE_SYSTEM_DIRECTRIES.add("/root");
+        IGNORE_SYSTEM_DIRECTRIES.add("/sys");
+        IGNORE_SYSTEM_DIRECTRIES.add("/usr");
+        IGNORE_SYSTEM_DIRECTRIES.add("/System");
         try {
             load();
         } catch (BackingStoreException ex) {

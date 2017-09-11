@@ -22,7 +22,7 @@ public class IgnoreSettings extends javax.swing.JDialog {
         jTextArea1.setText(x.toString().replace(".*", "*").replace("\\.", "."));
         jCheckBox1.setSelected(EmptyDirFinder.settings.IGNORE_OMB);
         jCheckBox2.setSelected(EmptyDirFinder.settings.IGNORE_SYS);
-        jCheckBox2.setText("Safety system directories (" + EmptyDirFinder.settings.IGNORE_SYSTEM_DIRECTRIES.get(0) + ")");
+        jCheckBox2.setText("Safety system directories");
     }
 
     /**
