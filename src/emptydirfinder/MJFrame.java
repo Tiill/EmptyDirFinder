@@ -24,8 +24,8 @@ public class MJFrame extends javax.swing.JFrame {
         initComponents();
         String mainpath = EmptyDirFinder.mainPath.getAbsolutePath();
         jTextField1.setText(mainpath);
-        jLabel1.setText("Empty: " + globalEmptyDirs.size() + "  / Dirs: " + EmptyDirFinder.listAllDirs.size()
-                + "  / Files: " + EmptyDirFinder.listAllFiles.size());
+        jLabel1.setText("Empty: " + globalEmptyDirs.size() + "  / Dirs: " + EmptyDirFinder.countAllDirs
+                + "  / Files: " + EmptyDirFinder.countAllFiles);
 
         listModel = new Vector<>(globalEmptyDirs);
         jList1.setListData(listModel);
@@ -54,7 +54,7 @@ public class MJFrame extends javax.swing.JFrame {
                         }
                     }
 
-                    new EmptyDirFinder().restart();
+//                    new EmptyDirFinder().restart();
                 } catch (UnsupportedFlavorException ex) {
                     Logger.getLogger(MJFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -186,7 +186,7 @@ public class MJFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -202,8 +202,8 @@ public class MJFrame extends javax.swing.JFrame {
         }
         jList1.clearSelection();
         jList1.repaint();
-        jLabel1.setText("Empty: " + listModel.size() + "  / Dirs: " + (EmptyDirFinder.listAllDirs.size()-deletedDirectorys)
-                + "  / Files: " + EmptyDirFinder.listAllFiles.size());
+        jLabel1.setText("Empty: " + listModel.size() + "  / Dirs: " + (EmptyDirFinder.countAllFiles-deletedDirectorys)
+                + "  / Files: " + EmptyDirFinder.countAllFiles);
         JOptionPane.showMessageDialog(rootPane, "Dellete:" + deletedDirectorys + " empty folders.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -217,7 +217,7 @@ public class MJFrame extends javax.swing.JFrame {
         }
         jTextField1.setText(browser.getSelectedFile().getAbsolutePath());
         try {
-            new EmptyDirFinder().restart();
+            new EmptyDirFinder().restart(2);
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -246,10 +246,11 @@ public class MJFrame extends javax.swing.JFrame {
             for (File c : f.listFiles()) {
                 delete(c);
             }
-            deletedDirectorys++;
         }
         if (f.delete()) {
-            listModel.remove(f);
+            if(listModel.remove(f)){
+                deletedDirectorys++;
+            }
         } else {
             System.out.println("Failed to delete file: " + f);
         }

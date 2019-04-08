@@ -1,11 +1,13 @@
 package emptydirfinder;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 
 public class Settings {
 
@@ -14,6 +16,7 @@ public class Settings {
     boolean IGNORE_SYS = true;
     boolean IGNORE_OMB = true;
     Preferences localSettings = Preferences.userRoot();
+    public List<Pattern> pat = new ArrayList<>();
 
     public Settings() {
         IGNORE_SYSTEM_DIRECTRIES.add(System.getenv("WINDIR"));
