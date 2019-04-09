@@ -47,11 +47,11 @@ public class NIOBrowser {
                         for (Pattern ignoreFile : settings.pat) {
                             Matcher mat = ignoreFile.matcher(file.getFileName().toString());
                             if (mat.matches()) {
-                                System.out.println("Ignore:" + file.getFileName().toString());
+//                                System.out.println("Ignore:" + file.getFileName().toString());
                                 return FileVisitResult.CONTINUE;
                             }
                             if (settings.IGNORE_OMB == true && 0 == file.toFile().length()) {
-                                System.out.println("Ignore:" + file.getFileName().toString());
+//                                System.out.println("Ignore:" + file.getFileName().toString());
                                 return FileVisitResult.CONTINUE;
                             }
                         }
@@ -100,7 +100,8 @@ public class NIOBrowser {
 
                     if (countLevelIN > 1) {
                         countLevelIN--;
-                        TemperedEmptyFolder = dir;
+//                        TemperedEmptyFolder = dir;
+                        EmptyDirFinder.globalEmptyDirs.add(dir.toFile());
                     } else if (countLevelIN == 1) {
                         countLevelIN--;
                         TemperedEmptyFolder = null;
