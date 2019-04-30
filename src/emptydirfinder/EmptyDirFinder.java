@@ -2,29 +2,25 @@ package emptydirfinder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EmptyDirFinder {
 
     static StartJFrame stFrame;
     static File mainPath;
-    static ArrayList<File> listAllFiles = new ArrayList<>();
     static int countAllFiles = 0;
-    static ArrayList<File> listAllDirs = new ArrayList<>();
     static int countAllDirs = 0;
-    static List<File> globalEmptyDirs = new LinkedList<>();
-    private static final Object lock = new Object();
+    static List<EmptyDirectory> globalEmptyDirs = new LinkedList<>();
     static MJFrame mFraim;
     static Settings settings = new Settings();
     static Thread processThread = null;
+    static LocalTime TimeOfProccess = LocalTime.MIDNIGHT;
 
     /**
      * @param args the command line arguments
@@ -59,87 +55,24 @@ public class EmptyDirFinder {
         });
     }
 
-    private static boolean findemptydirsWithRecAll(File z) {
-        synchronized (lock) {
-            if (z == null) {
-                System.out.println("File null.");
-                return false;
-            }
-            if (z.isFile()) {
-                if (!settings.pat.isEmpty()) {
-                    for (Pattern ignoreFile : settings.pat) {
-                        Matcher mat = ignoreFile.matcher(z.getName());
-                        if (mat.matches()) {
-                            System.out.println("Ignore:" + z.getName());
-                            return false;
-                        }
-                        if (settings.IGNORE_OMB == true && 0 == z.length()) {
-                            System.out.println("Ignore:" + z.getName());
-                            return false;
-                        }
-                    }
-                }
-                stFrame.incjTextField1();
-                countAllFiles++;
-                return true;
-            }
-            if (z.isDirectory()) {
-                stFrame.incjTextField2();
-                countAllDirs++;
-                if (settings.IGNORE_SYS == true) {
-                    for (String x : settings.IGNORE_SYSTEM_DIRECTRIES) {
-                        if (z.getAbsolutePath().equals(x)) {
-                            System.out.println("blocked: " + z);
-                            return true;
-                        }
-                    }
-                }
-                boolean notEmpty = false;
-                File[] childrenFiles = z.listFiles();
-                if (childrenFiles == null) {
-                    System.out.println("blocked: " + z);
-                    return true;
-                }
-                for (File x : childrenFiles) {
-                    boolean answer = findemptydirsWithRecAll(x);
-                    if (answer == true) {
-                        notEmpty = true;
-                    } else {
-                    }
-                }
-                if (notEmpty == false) {
-                    stFrame.incjTextField3();
-                    globalEmptyDirs.add(z);
-                    return false;
-                } else {
-                    return true;
-                }
-
-            }
-            System.out.println("not one predicate");
-            return false;
-        }
-    }
-
-    public void restart(int version) throws IOException {
-        processThread = new restartThread(version);
+    public void restart() throws IOException {
+        processThread = new restartThread();
         processThread.start();
     }
 
     class restartThread extends Thread {
-
-        private int versionToUse = 1;
-
-        public restartThread(int versionToUse) {
-            this.versionToUse = versionToUse;
-        }
+        
 
         @Override
         public void run() {
+            long start = System.currentTimeMillis();
             mainPath = new File(mFraim.getjTextField1().getText());
             mFraim.dispose();
 
             globalEmptyDirs = new LinkedList<>();
+            countAllDirs=0;
+            countAllFiles=0;
+            EmptyDirectory.ResetLengthToString();
 
             settings.pat.clear();
             for (String ignoreFile : settings.IGNORE_FILES) {
@@ -149,18 +82,23 @@ public class EmptyDirFinder {
             stFrame = new StartJFrame();
             stFrame.setVisible(true);
 
-            System.out.println(new Date(System.currentTimeMillis()));               //debug
-            if (versionToUse == 1) {
-                findemptydirsWithRecAll(mainPath);
-            }
-            if (versionToUse == 2) {
-                new NIOBrowser().Find();
-            }
-            System.out.println(new Date(System.currentTimeMillis()));               //debug
+            Date startTime = new Date(System.currentTimeMillis());
+            LocalTime Time = LocalTime.now();
+            new NIOBrowser().Find();
+            LocalTime lTime = LocalTime.ofSecondOfDay(LocalTime.now().toSecondOfDay()-Time.toSecondOfDay());
+            TimeOfProccess = lTime;
 
             /* Close start window */
-            //stFrame.dispose();
-            stFrame.setVisible(false);
+            stFrame.dispose();
+//            stFrame.setVisible(false);
+            globalEmptyDirs.sort(new Comparator<EmptyDirectory>() {
+
+                @Override
+                public int compare(EmptyDirectory o1, EmptyDirectory o2) {
+                    return o1.SPath.compareTo(o2.SPath);
+                }
+            });
+            
             java.awt.EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {

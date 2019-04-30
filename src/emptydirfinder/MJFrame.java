@@ -1,18 +1,29 @@
 package emptydirfinder;
 
+import com.sun.javafx.embed.AbstractEvents;
 import static emptydirfinder.EmptyDirFinder.globalEmptyDirs;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.TransferHandler;
 
 public class MJFrame extends javax.swing.JFrame {
@@ -25,7 +36,7 @@ public class MJFrame extends javax.swing.JFrame {
         String mainpath = EmptyDirFinder.mainPath.getAbsolutePath();
         jTextField1.setText(mainpath);
         jLabel1.setText("Empty: " + globalEmptyDirs.size() + "  / Dirs: " + EmptyDirFinder.countAllDirs
-                + "  / Files: " + EmptyDirFinder.countAllFiles);
+                + "  / Files: " + EmptyDirFinder.countAllFiles + "  / Time: " + EmptyDirFinder.TimeOfProccess);
 
         listModel = new Vector<>(globalEmptyDirs);
         jList1.setListData(listModel);
@@ -64,6 +75,7 @@ public class MJFrame extends javax.swing.JFrame {
                 return true;
             }
         });
+        jList1.setCellRenderer(new MyListCellRenderer(this));
     }
 
     /**
@@ -75,6 +87,13 @@ public class MJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        SelectorjPopupMenu = new javax.swing.JPopupMenu();
+        SelectAlljMenuItem = new javax.swing.JMenuItem();
+        SelectBlackjMenuItem = new javax.swing.JMenuItem();
+        SelectRedjMenuItem = new javax.swing.JMenuItem();
+        ListRightClickjPopupMenu = new javax.swing.JPopupMenu();
+        ShowInExplorerjMenuItem = new javax.swing.JMenuItem();
+        RemoveFromListjMenuItem = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -85,6 +104,51 @@ public class MJFrame extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+
+        SelectAlljMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-Bulleted List-15.png"))); // NOI18N
+        SelectAlljMenuItem.setText("Select All");
+        SelectAlljMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectAlljMenuItemActionPerformed(evt);
+            }
+        });
+        SelectorjPopupMenu.add(SelectAlljMenuItem);
+
+        SelectBlackjMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-BlackSquare.png"))); // NOI18N
+        SelectBlackjMenuItem.setText("Select");
+        SelectBlackjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectBlackjMenuItemActionPerformed(evt);
+            }
+        });
+        SelectorjPopupMenu.add(SelectBlackjMenuItem);
+
+        SelectRedjMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-RedSquare.png"))); // NOI18N
+        SelectRedjMenuItem.setText("Select");
+        SelectRedjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectRedjMenuItemActionPerformed(evt);
+            }
+        });
+        SelectorjPopupMenu.add(SelectRedjMenuItem);
+
+        ShowInExplorerjMenuItem.setText("Show in explorer");
+        ShowInExplorerjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ShowInExplorerjMenuItemActionPerformed(evt);
+            }
+        });
+        ListRightClickjPopupMenu.add(ShowInExplorerjMenuItem);
+
+        RemoveFromListjMenuItem.setText("Remove from this list (without deletion)");
+        RemoveFromListjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveFromListjMenuItemActionPerformed(evt);
+            }
+        });
+        ListRightClickjPopupMenu.add(RemoveFromListjMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("EmptyDirFinder");
@@ -93,17 +157,23 @@ public class MJFrame extends javax.swing.JFrame {
         jTextField1.setEditable(false);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-Trash-15.png"))); // NOI18N
-        jButton1.setText("Dellete folders");
+        jButton1.setText("Dellete directories");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
+        jList1.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jList1);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-Todo List-15.png"))); // NOI18N
-        jButton2.setText("Select All");
+        jButton2.setText("Select ...");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -139,6 +209,12 @@ public class MJFrame extends javax.swing.JFrame {
         jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(102, 102, 255), new java.awt.Color(204, 204, 204)));
         jLabel1.setOpaque(true);
 
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-BlackSquare.png"))); // NOI18N
+        jLabel2.setText("- Directories without nested files");
+
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons8-RedSquare.png"))); // NOI18N
+        jLabel3.setText("- Directories with nested files");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -148,18 +224,25 @@ public class MJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextField1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTextField1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,7 +258,12 @@ public class MJFrame extends javax.swing.JFrame {
                     .addComponent(jButton5)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -195,16 +283,17 @@ public class MJFrame extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         deletedDirectorys = 0;
         for (Object z : jList1.getSelectedValuesList()) {
-            File x = (File) z;
+            EmptyDirectory y = (EmptyDirectory) z;
+            File x = new File(y.SPath);
             if (x.exists()) {
                 delete(x);
             }
         }
         jList1.clearSelection();
         jList1.repaint();
-        jLabel1.setText("Empty: " + listModel.size() + "  / Dirs: " + (EmptyDirFinder.countAllFiles-deletedDirectorys)
+        jLabel1.setText("Empty: " + listModel.size() + "  / Dirs: " + (EmptyDirFinder.countAllFiles - deletedDirectorys)
                 + "  / Files: " + EmptyDirFinder.countAllFiles);
-        JOptionPane.showMessageDialog(rootPane, "Dellete:" + deletedDirectorys + " empty folders.");
+        JOptionPane.showMessageDialog(rootPane, "Delete:" + deletedDirectorys + " empty folders.");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -217,16 +306,14 @@ public class MJFrame extends javax.swing.JFrame {
         }
         jTextField1.setText(browser.getSelectedFile().getAbsolutePath());
         try {
-            new EmptyDirFinder().restart(2);
+            new EmptyDirFinder().restart();
         } catch (IOException e) {
             System.out.println(e);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (jList1.getModel().getSize() > 0) {
-            jList1.setSelectionInterval(0, jList1.getModel().getSize() - 1);
-        }
+        SelectorjPopupMenu.show(jButton2, 0, 0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -236,6 +323,65 @@ public class MJFrame extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         new IgnoreSettings().setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void SelectAlljMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectAlljMenuItemActionPerformed
+        if (jList1.getModel().getSize() > 0) {
+            jList1.setSelectionInterval(0, jList1.getModel().getSize() - 1);
+        }
+    }//GEN-LAST:event_SelectAlljMenuItemActionPerformed
+
+    private void SelectBlackjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectBlackjMenuItemActionPerformed
+        if (jList1.getModel().getSize() > 0) {
+            ArrayList<Integer> indices = new ArrayList<>();
+            listModel.stream().filter((e) -> (e.color.equals(Color.BLACK))).forEach((e) -> {
+                indices.add(listModel.indexOf(e));
+            });
+            int[] iindices = new int[indices.size()];
+            for (int i=0; i<indices.size();i++){
+                iindices[i]=indices.get(i);
+            } 
+            jList1.setSelectedIndices(iindices);
+        }
+    }//GEN-LAST:event_SelectBlackjMenuItemActionPerformed
+
+    private void SelectRedjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectRedjMenuItemActionPerformed
+        if (jList1.getModel().getSize() > 0) {
+            ArrayList<Integer> indices = new ArrayList<>();
+            listModel.stream().filter((e) -> (e.color.equals(Color.RED))).forEach((e) -> {
+                indices.add(listModel.indexOf(e));
+            });
+            int[] iindices = new int[indices.size()];
+            for (int i=0; i<indices.size();i++){
+                iindices[i]=indices.get(i);
+            } 
+            jList1.setSelectedIndices(iindices);
+        }
+    }//GEN-LAST:event_SelectRedjMenuItemActionPerformed
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        if(evt.getButton() == MouseEvent.BUTTON3){
+            ListRightClickjPopupMenu.show(jList1, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_jList1MouseClicked
+
+    private void ShowInExplorerjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowInExplorerjMenuItemActionPerformed
+        int index = jList1.getSelectedIndex();
+        if(index != -1){
+            try {
+                Desktop.getDesktop().open(new File(listModel.get(index).SPath));
+            } catch (IOException ex) {
+                Logger.getLogger(MJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_ShowInExplorerjMenuItemActionPerformed
+
+    private void RemoveFromListjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveFromListjMenuItemActionPerformed
+        int[] indxToRemove = jList1.getSelectedIndices();
+        for(int i = indxToRemove.length-1;i>=0;i--){
+            listModel.removeElementAt(indxToRemove[i]);
+        }
+        jList1.repaint();
+    }//GEN-LAST:event_RemoveFromListjMenuItemActionPerformed
 
     public JTextField getjTextField1() {
         return jTextField1;
@@ -248,26 +394,89 @@ public class MJFrame extends javax.swing.JFrame {
             }
         }
         if (f.delete()) {
-            if(listModel.remove(f)){
-                deletedDirectorys++;
+            for (int i = 0; i < listModel.size(); i++) {
+                if (listModel.get(i).SPath.equals(f.getAbsolutePath())) {
+                    if (listModel.remove(i) != null) {
+                        deletedDirectorys++;
+                    }
+                }
             }
         } else {
             System.out.println("Failed to delete file: " + f);
         }
     }
 
-    private Vector<File> listModel;
+    
+    
+
+    Vector<EmptyDirectory> listModel;
     private Integer deletedDirectorys = 0;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu ListRightClickjPopupMenu;
+    private javax.swing.JMenuItem RemoveFromListjMenuItem;
+    private javax.swing.JMenuItem SelectAlljMenuItem;
+    private javax.swing.JMenuItem SelectBlackjMenuItem;
+    private javax.swing.JMenuItem SelectRedjMenuItem;
+    private javax.swing.JPopupMenu SelectorjPopupMenu;
+    private javax.swing.JMenuItem ShowInExplorerjMenuItem;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+}
+
+class MyListCellRenderer extends JLabel implements ListCellRenderer<Object> {
+    private final MJFrame mainframe;
+
+    public MyListCellRenderer(MJFrame mainframe) {
+        this.mainframe = mainframe;
+        setOpaque(true);
+    }
+
+    @Override
+    public Component getListCellRendererComponent(JList paramlist, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        setText(value.toString());
+        setFont(new java.awt.Font("Courier New", 0, 11));
+        if (isSelected) {
+            setBackground(Color.LIGHT_GRAY);
+        } else {
+            setBackground(Color.WHITE);
+        }
+        setBorder(BorderFactory.createEmptyBorder(5, 3, 0, 0));
+        EmptyDirectory e = (EmptyDirectory) value;
+        if (e.emptySubFiles > 0 || e.igmoreSubFiles > 0) {
+            setForeground(Color.RED);
+            e.color = Color.RED;
+        } else {
+            Vector<EmptyDirectory> lm = mainframe.listModel;
+            int yndex = lm.indexOf(e);
+            EmptyDirectory r = null;
+            while (true) {
+                yndex++;
+                if(yndex>lm.size()-1) break;
+                r = lm.get(yndex);
+                if (r.SPath.contains(e.SPath)) {
+                    if (r.emptySubFiles > 0 || r.igmoreSubFiles > 0) {
+                        setForeground(Color.RED);
+                        e.color = Color.RED;
+                        return this;
+                    }
+                } else {
+                    break;
+                }
+            }
+            setForeground(Color.BLACK);
+            e.color = Color.BLACK;
+        }
+        return this;
+    }
 }
